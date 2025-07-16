@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -25,7 +26,7 @@ public class GithubClient {
         List<RepoDto> repos = getRepos(username);
         return repos.stream()
                 .filter(repo -> !repo.fork())
-                .collect(Collectors.toMap(repo -> repo, repo -> getRepoBranches(username, repo.name())));
+                .collect(Collectors.toMap(Function.identity(), repo -> getRepoBranches(username, repo.name())));
     }
 
     private List<RepoDto> getRepos(String username) {
