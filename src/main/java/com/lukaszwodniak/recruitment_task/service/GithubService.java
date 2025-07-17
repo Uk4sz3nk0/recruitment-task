@@ -26,12 +26,20 @@ public class GithubService {
                     RepoDto repo = repoEntry.getKey();
                     List<BranchDto> branches = repoEntry.getValue();
                     List<GitBranchResponseDto> mappedBranches = branches.stream()
-                            .map(branch -> new GitBranchResponseDto(branch.name(), branch.commit()
-                                    .sha()))
+                            .map(this::mapBranch)
                             .toList();
-                    return new GitReposResponseDto(repo.name(), repo.owner()
-                            .login(), mappedBranches);
+                    return mapRepo(repo, mappedBranches);
                 })
                 .toList();
+    }
+
+    private GitBranchResponseDto mapBranch(BranchDto branch) {
+        return new GitBranchResponseDto(branch.name(), branch.commit()
+                .sha());
+    }
+
+    private GitReposResponseDto mapRepo(RepoDto repo, List<GitBranchResponseDto> branches) {
+        return new GitReposResponseDto(repo.name(), repo.owner()
+                .login(), branches);
     }
 }
